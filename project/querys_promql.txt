@@ -1,0 +1,10 @@
+
+apiserver_request_total { code =~ "200" } / apiserver_request_total
+
+histogram_quantile(0.90, sum(rate(http_request_duration_seconds_bucket{job="website"}[60s])) by (le, verb))
+
+error budget = 1 - availability
+
+sum(rate(http_request_total{code=~"2.."}[1m]))
+
+sum (rate(apiserver_request_total{job="apiserver",code!~"2.."}[5m]))/sum (rate(apiserver_request_total{job="apiserver"}[5m]))
